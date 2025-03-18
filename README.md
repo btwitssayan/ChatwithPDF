@@ -86,7 +86,10 @@ Follow these steps to set up the project locally:
   └── README.md               # Project documentation
   ```
 ## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+
+This project is licensed under the **Apache License 2.0**. 
+
+### Apache License 2.0
   
 ## Contributing
 Contributions are welcome! To contribute:
