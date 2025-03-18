@@ -57,11 +57,11 @@ Follow these steps to set up the project locally:
      ```bash
      HF_TOKEN=your_huggingface_token_here
      ```
-*Configuration*
+##Configuration
   - API Key: The application requires a GROQ AI API key for model integration. Input your API key in the sidebar once the app is running.
   - Session Management: Utilize the session ID feature to handle multiple conversations independently.
 
-*Usage*
+##Usage
   1. Run the Application:
      ```bash
      streamlit run app.py
@@ -71,7 +71,7 @@ Follow these steps to set up the project locally:
   4. Start Chatting: Ask questions about your PDFs using the chat interface. The application will retrieve context from the documents and respond with accurate, concise answers.
   5. Clear Chat History: Use the clear button to reset the conversation if needed.
 
-*Project Structure*
+##Project Structure
   ```bash
     pdf-chat-assistant/
   ├── app.py                  # Main Streamlit application script
@@ -80,8 +80,8 @@ Follow these steps to set up the project locally:
   ├── .env                    # Environment variables (not tracked by version control)
   └── README.md               # Project documentation
   ```
-*License*
-  This project is licensed under the MIT License. See the LICENSE file for more details.
+##License
+This project is licensed under the MIT License. See the LICENSE file for more details.
   
 
 
