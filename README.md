@@ -22,7 +22,7 @@
 - **Customizable Configuration:** Simple API key and session management to tailor the chat experience.
 
 ## Project Screenshot
-![PDF Chat Assistant Screenshot](screenshot.png)
+![PDF Chat Assistant Screenshot](screenshot.png.png)
 > *A snapshot of the PDF Chat Assistant interface showcasing the document upload and chat features.*
 
 
