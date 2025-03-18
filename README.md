@@ -21,6 +21,11 @@
 - **Modular and Extensible:** Built with a modular architecture using LangChain components for efficient document processing and retrieval.
 - **Customizable Configuration:** Simple API key and session management to tailor the chat experience.
 
+## Project Screenshot
+![PDF Chat Assistant Screenshot](screenshot.png)
+> *A snapshot of the PDF Chat Assistant interface showcasing the document upload and chat features.*
+
+
 ## Technologies Used
 - **Streamlit:** For rapid web application development and user interface rendering.
 - **LangChain:** Orchestrates document processing and conversational chains, including:
