@@ -2,6 +2,7 @@ import fitz  # PyMuPDF
 import os
 from PIL import Image
 from mistralai import Mistral
+import streamlit as st
 
 def convert_pdf_to_images(pdf_path, zoom=2.0):
     # Open the PDF
@@ -29,7 +30,7 @@ def convert_pdf_to_images(pdf_path, zoom=2.0):
 
 def extract_text_from_pdf(pdf_path: str) -> str:
     # Retrieve the API key from environment variables
-    api_key = os.getenv("MISTRAL_API_KEY")
+    api_key = st.secrets["MISTRAL_API_KEY"]
     
     # Initialize the Mistral client
     client = Mistral(api_key=api_key)
