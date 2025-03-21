@@ -11,16 +11,9 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.vectorstores import FAISS
-from dotenv import load_dotenv
 from utils import convert_pdf_to_images,extract_text_from_pdf
 from langchain_core.documents import Document
 from langchain_mistralai import MistralAIEmbeddings
-
-
-# Load environment variables
-load_dotenv()
-
-
 # Initialize embeddings
 embeddings = MistralAIEmbeddings(
     model="mistral-embed",
