@@ -24,7 +24,7 @@ load_dotenv()
 # Initialize embeddings
 embeddings = MistralAIEmbeddings(
     model="mistral-embed",
-    api_key=os.getenv("MISTRAL_API_KEY")
+    api_key=st.secrets["MISTRAL_API_KEY"]
 )
 
 # Streamlit Page Configuration
