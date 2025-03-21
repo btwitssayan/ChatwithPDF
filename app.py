@@ -1,3 +1,26 @@
+import streamlit as st
+import os
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain.chains.retrieval import create_retrieval_chain
+from langchain.chains.history_aware_retriever import create_history_aware_retriever
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_groq import ChatGroq
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_community.vectorstores import FAISS
+from utils import convert_pdf_to_images,extract_text_from_pdf
+from langchain_core.documents import Document
+from langchain_mistralai import MistralAIEmbeddings
+
+# Initialize embeddings
+embeddings = MistralAIEmbeddings(
+    model="mistral-embed",
+    api_key=st.secrets["MISTRAL_API_KEY"]
+)
+
 # Streamlit Page Configuration
 st.set_page_config(
     page_title="PDF ChatBot",
