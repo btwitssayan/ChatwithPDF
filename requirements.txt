@@ -12,3 +12,4 @@ frontend
 pypdf
 starlette
 pymupdf
+faiss-cpu
