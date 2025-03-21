@@ -96,7 +96,13 @@ if api_key:
                         documents.extend(docs)
                         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
                         splitted_docs = text_splitter.split_documents(documents)
-                        st.session_state.vector_store = FAISS.from_documents(splitted_docs, embeddings)
+                        new_vector_store = FAISS.from_documents(splitted_docs, embeddings)
+    
+                        # Merge new embeddings with existing ones if available
+                        if st.session_state.vector_store is not None:
+                            st.session_state.vector_store.merge_from(new_vector_store)
+                        else:
+                            st.session_state.vector_store = new_vector_store
                         st.session_state.retriever = st.session_state.vector_store.as_retriever()
                     except Exception as e:
                         st.info(f"Trying our best OCR to extract text....")
@@ -107,8 +113,14 @@ if api_key:
                                         # Split documents for RAG
                         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
                         splitted_docs = text_splitter.split_documents(documents)
-                        
-                        st.session_state.vector_store = FAISS.from_documents(splitted_docs, embeddings)
+                        new_vector_store = FAISS.from_documents(splitted_docs, embeddings)
+    
+                        # Merge new embeddings with existing ones if available
+                        if st.session_state.vector_store is not None:
+                            st.session_state.vector_store.merge_from(new_vector_store)
+                        else:
+                            st.session_state.vector_store = new_vector_store
+                        st.session_state.retriever = st.session_state.vector_store.as_retriever()
                         st.session_state.retriever = st.session_state.vector_store.as_retriever()
                     # Convert the PDF to images and append them to the images list
                     st.session_state.images = convert_pdf_to_images(temppdf)
