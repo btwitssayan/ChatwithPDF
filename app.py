@@ -1,29 +1,31 @@
 import streamlit as st
 import os
-import time
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_groq import ChatGroq
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.vectorstores import FAISS
 from dotenv import load_dotenv
-from utils import convert_pdf_to_images
+from utils import convert_pdf_to_images,extract_text_from_pdf
+from langchain_core.documents import Document
+from langchain_mistralai import MistralAIEmbeddings
+
 
 # Load environment variables
 load_dotenv()
-hf_token = os.getenv('HF_TOKEN')
-if hf_token:
-    os.environ['HF_TOKEN'] = hf_token
+
 
 # Initialize embeddings
-embeddings = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')
+embeddings = MistralAIEmbeddings(
+    model="mistral-embed",
+    api_key=os.getenv("MISTRAL_API_KEY")
+)
 
 # Streamlit Page Configuration
 st.set_page_config(
@@ -87,29 +89,37 @@ if api_key:
     # Process uploaded PDFs
     if uploaded_files:
         if st.session_state.vector_store is None:
+            st.session_state.images = []  # Initialize as an empty list if not already set
             with st.spinner("Processing documents... This may take a moment."):
                 documents = []
-                
                 for uploaded_file in uploaded_files:
                     temppdf = './temp.pdf'
-                    with open(temppdf, "wb") as file:
-                        file.write(uploaded_file.getvalue())
-                    
-
-                    # Convert PDF pages to images for preview
+                    docs = []
+                    try:
+                        with open(temppdf, "wb") as file:
+                            file.write(uploaded_file.getvalue())                        
+                        loader = PyPDFLoader(temppdf)
+                        docs = loader.load()
+                        documents.extend(docs)
+                        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+                        splitted_docs = text_splitter.split_documents(documents)
+                        st.session_state.vector_store = FAISS.from_documents(splitted_docs, embeddings)
+                        st.session_state.retriever = st.session_state.vector_store.as_retriever()
+                    except Exception as e:
+                        st.info(f"Trying our best OCR to extract text....")
+                        t = extract_text_from_pdf(temppdf)
+                        docs = [Document(page_content=t, metadata={'source': uploaded_file.name})]
+                        print(docs)
+                        documents.extend(docs)
+                                        # Split documents for RAG
+                        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+                        splitted_docs = text_splitter.split_documents(documents)
+                        
+                        st.session_state.vector_store = FAISS.from_documents(splitted_docs, embeddings)
+                        st.session_state.retriever = st.session_state.vector_store.as_retriever()
+                    # Convert the PDF to images and append them to the images list
                     st.session_state.images = convert_pdf_to_images(temppdf)
-                    
-                    loader = PyPDFLoader(temppdf)
-                    docs = loader.load()
-                    documents.extend(docs)
-                
-                # Split documents for RAG
-                text_splitter = RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=500)
-                splitted_docs = text_splitter.split_documents(documents)
-                
-                st.session_state.vector_store = FAISS.from_documents(splitted_docs, embeddings)
-                st.session_state.retriever = st.session_state.vector_store.as_retriever()
-        
+
         # History-aware retriever chain configuration
         contextualize_q_system_prompt = (
             "Given a chat history and the latest user question, "
